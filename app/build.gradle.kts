@@ -80,7 +80,7 @@ dependencies {
     // Glide
     implementation(libs.glide.compose)
 
-    // Retorfit
+    // Retrofit
     implementation(libs.retorfit.core)
     implementation(libs.retorfit.gsonConverter)
 
