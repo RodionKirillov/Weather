@@ -1,10 +1,10 @@
-package com.example.weather.data.network.local.db
+package com.example.weather.data.local.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.weather.data.network.local.model.CityDbModel
+import com.example.weather.data.local.model.CityDbModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
