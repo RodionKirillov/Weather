@@ -165,10 +165,10 @@ class FavoriteStoreFactory @Inject constructor(
     }
 
     private object ReducerImpl : Reducer<State, Msg> {
-        override fun State.reduce(message: Msg): State = when (message) {
+        override fun State.reduce(msg: Msg): State = when (msg) {
             is Msg.FavoriteCitiesLoaded -> {
                 copy(
-                    cityItems = message.cities.map {
+                    cityItems = msg.cities.map {
                         State.CityItem(
                             city = it,
                             weatherState = State.WeatherState.Initial
@@ -180,7 +180,7 @@ class FavoriteStoreFactory @Inject constructor(
             is Msg.WeatherIsLoading -> {
                 copy(
                     cityItems = cityItems.map {
-                        if (it.city.id == message.cityId) {
+                        if (it.city.id == msg.cityId) {
                             it.copy(weatherState = State.WeatherState.Loading)
                         } else {
                             it
@@ -192,11 +192,11 @@ class FavoriteStoreFactory @Inject constructor(
             is Msg.WeatherLoaded -> {
                 copy(
                     cityItems = cityItems.map {
-                        if (it.city.id == message.cityId) {
+                        if (it.city.id == msg.cityId) {
                             it.copy(
                                 weatherState = State.WeatherState.Loaded(
-                                    tempC = message.tempC,
-                                    iconUrl = message.conditionIconUrl
+                                    tempC = msg.tempC,
+                                    iconUrl = msg.conditionIconUrl
                                 )
                             )
                         } else {
@@ -209,7 +209,7 @@ class FavoriteStoreFactory @Inject constructor(
             is Msg.WeatherLoadingError -> {
                 copy(
                     cityItems = cityItems.map {
-                        if (it.city.id == message.cityId) {
+                        if (it.city.id == msg.cityId) {
                             it.copy(weatherState = State.WeatherState.Error)
                         } else {
                             it

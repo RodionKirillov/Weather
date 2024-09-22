@@ -165,13 +165,13 @@ internal class DetailsStoreFactory @Inject constructor(
     }
 
     private object ReducerImpl : Reducer<State, Msg> {
-        override fun State.reduce(message: Msg): State = when (message) {
+        override fun State.reduce(msg: Msg): State = when (msg) {
             is Msg.FavoriteStatusChanged -> {
-                copy(isFavorite = message.isFavorite)
+                copy(isFavorite = msg.isFavorite)
             }
 
             is Msg.ForecastLoaded -> {
-                copy(forecastState = State.ForecastState.Loaded(message.forecast))
+                copy(forecastState = State.ForecastState.Loaded(msg.forecast))
             }
 
             Msg.ForecastLoadingError -> {
