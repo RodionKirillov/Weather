@@ -3,6 +3,10 @@ package com.example.weather.presentation.root
 import android.os.Parcelable
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.example.weather.domain.entity.City
 import com.example.weather.presentation.details.DefaultDetailsComponent
@@ -23,8 +27,14 @@ class DefaultRootComponent @AssistedInject constructor(
     @Assisted("componentContext") componentContext: ComponentContext
 ) : RootComponent, ComponentContext by componentContext {
 
-    override val stack: Value<ChildStack<*, RootComponent.Child>>
-        get() = TODO("Not yet implemented")
+    private val navigation = StackNavigation<Config>()
+
+    override val stack: Value<ChildStack<*, RootComponent.Child>> = childStack(
+        source = navigation,
+        initialConfiguration = Config.Favorite,
+        handleBackButton = true,
+        childFactory = ::child
+    )
 
     private fun child(
         config: Config,
@@ -35,7 +45,7 @@ class DefaultRootComponent @AssistedInject constructor(
                 val component = detailsComponentFactory.create(
                     city = config.city,
                     onBackClicked = {
-
+                        navigation.pop()
                     },
                     componentContext = componentContext
                 )
@@ -45,13 +55,13 @@ class DefaultRootComponent @AssistedInject constructor(
             is Config.Favorite -> {
                 val component = favoriteComponentFactory.create(
                     onCityItemClicked = {
-
+                        navigation.push(Config.Details(it))
                     },
                     onAddFavoriteClicked = {
-
+                        navigation.push(Config.Search(OpenReason.AddToFavorite))
                     },
                     onSearchClicked = {
-
+                        navigation.push(Config.Search(OpenReason.RegularSearch))
                     },
                     componentContext = componentContext
                 )
@@ -62,13 +72,13 @@ class DefaultRootComponent @AssistedInject constructor(
                 val component = searchComponentFactory.create(
                     openReason = config.openReason,
                     onBackClicked = {
-
+                        navigation.pop()
                     },
                     onCitySavedToFavorite = {
-
+                        navigation.pop()
                     },
                     onForecastForCityRequested = {
-
+                        navigation.push(Config.Details(it))
                     },
                     componentContext = componentContext
                 )

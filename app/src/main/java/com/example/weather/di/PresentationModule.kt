@@ -1,6 +1,7 @@
 package com.example.weather.di
 
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import dagger.Module
 import dagger.Provides
@@ -11,6 +12,6 @@ interface PresentationModule {
     companion object {
 
         @Provides
-        fun provideStoreFactory(): StoreFactory = DefaultStoreFactory()
+        fun provideStoreFactory(): StoreFactory = LoggingStoreFactory(DefaultStoreFactory())
     }
 }
