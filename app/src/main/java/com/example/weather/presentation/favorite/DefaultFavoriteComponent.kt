@@ -6,17 +6,20 @@ import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.example.weather.domain.entity.City
 import com.example.weather.presentation.extensions.componentScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class DefaultFavoriteComponent @Inject constructor(
+class DefaultFavoriteComponent @AssistedInject constructor(
     private val favoriteStoreFactory: FavoriteStoreFactory,
-    private val onCityItemClicked: (City) -> Unit,
-    private val onAddFavoriteClicked: () -> Unit,
-    private val onSearchClicked: () -> Unit,
-    componentContext: ComponentContext
+    @Assisted("onCityItemClicked") private val onCityItemClicked: (City) -> Unit,
+    @Assisted("onAddFavoriteClicked") private val onAddFavoriteClicked: () -> Unit,
+    @Assisted("onSearchClicked") private val onSearchClicked: () -> Unit,
+    @Assisted("componentContext") componentContext: ComponentContext
 ) : FavoriteComponent, ComponentContext by componentContext {
 
     private val store = instanceKeeper.getStore {
@@ -58,5 +61,16 @@ class DefaultFavoriteComponent @Inject constructor(
 
     override fun onCityItemCLick(city: City) {
         store.accept(FavoriteStore.Intent.CityItemClick(city))
+    }
+
+    @AssistedFactory
+    interface Factory {
+
+        fun create(
+            @Assisted("onCityItemClicked") onCityItemClicked: (City) -> Unit,
+            @Assisted("onAddFavoriteClicked") onAddFavoriteClicked: () -> Unit,
+            @Assisted("onSearchClicked") onSearchClicked: () -> Unit,
+            @Assisted("componentContext") componentContext: ComponentContext
+        ): DefaultFavoriteComponent
     }
 }
