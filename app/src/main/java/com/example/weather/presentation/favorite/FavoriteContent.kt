@@ -23,11 +23,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SignalWifiStatusbarConnectedNoInternet4
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -45,6 +47,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.weather.R
 import com.example.weather.presentation.extensions.tempToFormattedString
+import com.example.weather.presentation.ui.theme.Blue
 import com.example.weather.presentation.ui.theme.CardGradients
 import com.example.weather.presentation.ui.theme.Gradient
 
@@ -53,35 +56,38 @@ fun FavoriteContent(component: FavoriteComponent) {
 
     val state by component.model.collectAsState()
 
-    LazyVerticalGrid(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding(),
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    Scaffold(
+        containerColor =MaterialTheme.colorScheme.primary
     ) {
-        item(span = { GridItemSpan(2) }) {
-            SearchCard(
-                onClick = { component.onClickSearch() }
-            )
-        }
-        itemsIndexed(
-            items = state.cityItems,
-            key = { _, item -> item.city.id }
-        ) { index, item ->
-            CityCard(
-                onClick = { component.onCityItemCLick(item.city) },
-                cityItem = item,
-                index = index
-            )
-        }
-        item {
-            AddFavoriteCityCard(
-                onClick = { component.onClickAddFavorite() }
-            )
+        LazyVerticalGrid(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item(span = { GridItemSpan(2) }) {
+                SearchCard(
+                    onClick = { component.onClickSearch() }
+                )
+            }
+            itemsIndexed(
+                items = state.cityItems,
+                key = { _, item -> item.city.id }
+            ) { index, item ->
+                CityCard(
+                    onClick = { component.onCityItemCLick(item.city) },
+                    cityItem = item,
+                    index = index
+                )
+            }
+            item {
+                AddFavoriteCityCard(
+                    onClick = { component.onClickAddFavorite() }
+                )
+            }
         }
     }
 }
@@ -124,7 +130,16 @@ private fun CityCard(
                 .padding(24.dp)
         ) {
             when (val weatherState = cityItem.weatherState) {
-                FavoriteStore.State.WeatherState.Error -> {}
+                FavoriteStore.State.WeatherState.Error -> {
+                    Icon(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp,),
+                        imageVector = Icons.Default.SignalWifiStatusbarConnectedNoInternet4,
+                        tint = MaterialTheme.colorScheme.background,
+                        contentDescription = null
+                    )
+                }
 
                 FavoriteStore.State.WeatherState.Initial -> {}
 
@@ -141,7 +156,7 @@ private fun CityCard(
                         modifier = Modifier
                             .align(Alignment.TopStart),
                         text = weatherState.tempC.tempToFormattedString(),
-                        color = MaterialTheme.colorScheme.background,
+                        color = MaterialTheme.colorScheme.secondary,
                         style = MaterialTheme.typography.bodyLarge.copy(fontSize = 48.sp)
                     )
                 }
@@ -149,7 +164,7 @@ private fun CityCard(
                 FavoriteStore.State.WeatherState.Loading -> {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
-                        color = MaterialTheme.colorScheme.background
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
             }
@@ -157,7 +172,7 @@ private fun CityCard(
                 modifier = Modifier.align(Alignment.BottomStart),
                 text = cityItem.city.name,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.secondary
             )
         }
     }
@@ -201,7 +216,6 @@ private fun AddFavoriteCityCard(
 private fun SearchCard(
     onClick: () -> Unit
 ) {
-    val gradient = CardGradients.gradients[3]
     Card(
         onClick = { onClick() },
         shape = CircleShape
@@ -209,7 +223,7 @@ private fun SearchCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(gradient.primaryGradient),
+                .background(Blue),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -226,6 +240,7 @@ private fun SearchCard(
                 modifier = Modifier,
                 text = stringResource(R.string.search),
                 color = MaterialTheme.colorScheme.background,
+                style = MaterialTheme.typography.titleMedium
             )
         }
     }
