@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    // ksp
+    alias(libs.plugins.ksp)
+    // parcelize
+    alias(libs.plugins.parcelize)
 }
 
 android {
@@ -18,6 +22,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        val key = property("apikey")?.toString() ?: error(
+            "You should add apikey into gradle.properties"
+        )
+        buildConfigField("String", "WEATHER_API_KEY", "\"$key\"")
     }
 
     buildTypes {
@@ -38,6 +46,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -50,6 +59,33 @@ android {
 }
 
 dependencies {
+
+    // MVI
+    implementation("com.arkivanov.mvikotlin:mvikotlin:3.2.1")
+    implementation("com.arkivanov.mvikotlin:mvikotlin-main:3.2.1")
+    implementation("com.arkivanov.mvikotlin:mvikotlin-logging:3.2.1")
+    implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:3.2.1")
+    // decompose
+    implementation("com.arkivanov.decompose:decompose:2.1.2")
+    implementation("com.arkivanov.decompose:extensions-compose-jetpack:2.1.2")
+
+    // Room
+    implementation(libs.room.core)
+    ksp(libs.room.compiler)
+
+    // Dagger
+    implementation(libs.dagger.core)
+    ksp(libs.dagger.compiler)
+
+    // Glide
+    implementation(libs.glide.compose)
+
+    // Retrofit
+    implementation(libs.retorfit.core)
+    implementation(libs.retorfit.gsonConverter)
+
+    // Material icons
+    implementation(libs.icons)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
