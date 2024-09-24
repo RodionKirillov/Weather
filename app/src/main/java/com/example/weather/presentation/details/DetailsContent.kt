@@ -108,7 +108,10 @@ private fun TopBar(
 ) {
     CenterAlignedTopAppBar(
         title = {
-            Text(text = cityName)
+            Text(
+                text = cityName,
+                color = MaterialTheme.colorScheme.secondary,
+            )
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
@@ -165,7 +168,8 @@ private fun Forecast(forecast: Forecast) {
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = forecast.currentWeather.conditionText,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.secondary,
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -173,7 +177,8 @@ private fun Forecast(forecast: Forecast) {
         ) {
             Text(
                 text = forecast.currentWeather.tempC.tempToFormattedString(),
-                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 70.sp)
+                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 70.sp),
+                color = MaterialTheme.colorScheme.secondary,
             )
             GlideImage(
                 modifier = Modifier.size(80.dp),
@@ -183,7 +188,8 @@ private fun Forecast(forecast: Forecast) {
         }
         Text(
             text = forecast.currentWeather.date.formattedFullDay(),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.secondary,
         )
         Spacer(modifier = Modifier.weight(1f))
         AnimatedUpcomingWeather(upcoming = forecast.upcoming)
@@ -232,7 +238,8 @@ private fun UpcomingWeather(upcoming: List<Weather>) {
                     .padding(bottom = 24.dp)
                     .align(Alignment.CenterHorizontally),
                 text = stringResource(R.string.upcoming),
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.secondary,
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -267,13 +274,19 @@ private fun RowScope.SmallWeatherCard(weather: Weather) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = weather.tempC.tempToFormattedString())
+            Text(
+                text = weather.tempC.tempToFormattedString(),
+                color = MaterialTheme.colorScheme.tertiary,
+            )
             GlideImage(
                 modifier = Modifier.size(48.dp),
                 model = weather.conditionalUrl,
                 contentDescription = null
             )
-            Text(text = weather.date.formattedShortDayOfWeek())
+            Text(
+                text = weather.date.formattedShortDayOfWeek(),
+                color = MaterialTheme.colorScheme.tertiary,
+            )
         }
     }
 }
@@ -285,5 +298,16 @@ private fun Initial() {
 
 @Composable
 private fun Error() {
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(id = R.string.something_went_wrong),
+            fontSize = 24.sp,
+            color = MaterialTheme.colorScheme.secondary
+        )
+    }
 }
